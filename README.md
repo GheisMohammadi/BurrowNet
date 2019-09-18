@@ -22,7 +22,7 @@ root
 password4
 ```
 ### Step2: Install network using install shell file
-usage: install.sh <chainname> <empty_blocks_creation_time>
+usage: install.sh [chainname] [empty_blocks_creation_time]
 for example use line below for create a test net with name "testnet1" that creates an empty block every 5 minutes
 ```bash
 sudo bash install.sh testnet1 5m
@@ -32,17 +32,14 @@ After installation, if everything goes well, the shell file automatically run al
 Your network is ready and you can send transaction or deploy smart contracts 
 
 ### Uninstall network 
-usage: uninstall.sh <chainname>
+usage: uninstall.sh [chainname]
 ```bash
 sudo bash uninstall.sh testnet1
 ```
 ### Connect to node
-usage: connect.sh <nodeID>
+usage: connect.sh [node_ID]
 
 for example, for connect to node 1 use this:
 ```bash
 sudo bash connect.sh 1
 ```
-
-
-
