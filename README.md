@@ -1,6 +1,19 @@
 # BurrowNet
 Create a test net or main net of hyper ledger burrow using single command 
 
+# Requirements
+Make sure in the seed server these tools are installed:
+```bash
+sudo apt-get update
+sudo apt-get -y install curl
+sudo apt-get -y install sshpass
+sudo apt-get -y install sed
+sudo apt-get -y install jq
+```
+and also make sure that there is no problem with ports 10001,10002,10003 for seed node and 20000,20001,20002 for validator nodes.
+
+Note: The shell script will install these requirements automatically
+
 ## Install burrow network
 
 In this quick start, we will few create a small test net by 1 seed node and 3 validators
@@ -23,6 +36,7 @@ password4
 ```
 ### Step2: Install network using install shell file
 usage: install.sh [chainname] [empty_blocks_creation_time]
+
 for example use line below for create a test net with name "testnet1" that creates an empty block every 5 minutes
 ```bash
 sudo bash install.sh testnet1 5m
@@ -42,4 +56,11 @@ usage: connect.sh [node_ID]
 for example, for connect to node 1 use this:
 ```bash
 sudo bash connect.sh 1
+```
+### Check Connected Nodes
+usage: status.sh
+
+for example, for connect to node 1 use this:
+```bash
+sudo bash status.sh
 ```

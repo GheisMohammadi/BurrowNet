@@ -1,5 +1,6 @@
 #!/bin/bash
 
+#read inputs from command line
 chainname=$1
 validatorscount=$2
 seedurl=$3
@@ -11,7 +12,18 @@ seedurl2="127.0.0.1"
 prefix1="tcp://"
 prefix2="" 
 
-cd $chainname #burrow-testnet-2
+#install requirements
+echo "install curl..."
+apt-get -y install curl
+echo "install sshpass..."
+apt-get -y install sshpass
+echo "install sed..."
+apt-get -y install sed
+echo "install jq..."
+apt-get -y install jq
+
+#go to chain directory
+cd $chainname
 
 #Configure chain
 rm -rf .burrow* .keys*

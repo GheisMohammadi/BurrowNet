@@ -64,7 +64,7 @@ fi
 #upload shell files in seed node
 #==========================================================================================
 echo "upload shell files to server 0 (Seed Node)..."
-sshpass -p "${passwords[0]}" ssh -o 'StrictHostKeyChecking no' ${users[0]}@${urls[0]} "rm $chainname/setupseed.sh | rm $chainname/setuppeers.sh | rm $chainname/servers.txt"
+sshpass -p "${passwords[0]}" ssh -o 'StrictHostKeyChecking no' ${users[0]}@${urls[0]} "[ -e $chainname/setupseed.sh ] && rm $chainname/setupseed.sh | [ -e $chainname/setuppeers.sh ] && rm $chainname/setuppeers.sh | [ -e $chainname/servers.txt ] && rm $chainname/servers.txt"
 sshpass -p "${passwords[0]}" scp -o StrictHostKeyChecking=no "servers.txt" ${users[0]}@${urls[0]}:$chainname
 sshpass -p "${passwords[0]}" scp -o StrictHostKeyChecking=no "setupseed.sh" ${users[0]}@${urls[0]}:$chainname
 sshpass -p "${passwords[0]}" scp -o StrictHostKeyChecking=no "setuppeers.sh" ${users[0]}@${urls[0]}:$chainname

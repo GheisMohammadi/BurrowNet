@@ -10,12 +10,6 @@ prefix3=""
 
 cd $chainname #burrow-testnet-2
 
-echo "install sshpass..."
-apt-get -y install sshpass
-echo "install sed..."
-apt-get -y install sed
-
-
 echo "creating toml files for $nodescount peers..."
 for i in `seq 1 $nodescount`
 do
@@ -73,7 +67,6 @@ do
     sed -i s%"AllowBadFilePermissions = false"%"AllowBadFilePermissions = true"% .burrow_val$i.toml
     sed -i '/\[RPC.Info\]/,/BlockSampleSize = 100/d' .burrow_val$i.toml
     sed -i s%"\[RPC\]"%"\[RPC\] \n \[RPC.Info\] \n Enabled = true \n ListenHost = \"$prefix2${urls[$i]}\" \n ListenPort = \"20001\" \n \[RPC.Profiler\] \n Enabled = false \n \[RPC.GRPC\] \n Enabled = true \n ListenHost = \"$prefix3${urls[$i]}\" \n ListenPort = \"20002\" \n \[RPC.Metrics\] \n Enabled = false"% .burrow_val$i.toml
-    #sed -i s%"\[RPC\]"%"\[RPC\] \n \[RPC.Info\] \n Enabled = true \n ListenHost = \"127.0.0.1\" \n ListenPort = \"20001\" \n \[RPC.Profiler\] \n Enabled = false \n \[RPC.GRPC\] \n Enabled = true \n ListenHost = \"127.0.0.1\" \n ListenPort = \"20002\" \n \[RPC.Metrics\] \n Enabled = false"% .burrow_val$i.toml
 done
 
 #==========================================================================================
@@ -83,8 +76,8 @@ echo "updloading toml files for $nodescount peers..."
 for i in `seq 1 $nodescount`
 do
     echo "cleaning files for validator $i (${users[$i]}@${urls[$i]})..."
-    sshpass -p "${passwords[$i]}" ssh -o 'StrictHostKeyChecking no' ${users[$i]}@${urls[$i]} "rm -R $chainname/.keys"
-    sshpass -p "${passwords[$i]}" ssh -o 'StrictHostKeyChecking no' ${users[$i]}@${urls[$i]} "rm -R $chainname/.burrow_node$i"
+    sshpass -p "${passwords[$i]}" ssh -o 'StrictHostKeyChecking no' ${users[$i]}@${urls[$i]} "[ -d $chainname/.keys ] && rm -R $chainname/.keys"
+    sshpass -p "${passwords[$i]}" ssh -o 'StrictHostKeyChecking no' ${users[$i]}@${urls[$i]} "[ -d $chainname/.burrow_node$i ] && rm -R $chainname/.burrow_node$i"
     echo "uploading toml file for validator $i ..."
     sshpass -p "${passwords[$i]}" scp -o StrictHostKeyChecking=no ".burrow_val$i.toml" ${users[$i]}@${urls[$i]}:$chainname
     echo "uploading keys folder for validator $i ..."
@@ -100,8 +93,3 @@ do
     echo "start validator $i ..."
     sshpass -p "${passwords[$i]}" ssh -o 'StrictHostKeyChecking no' ${users[$i]}@${urls[$i]} "bash $chainname/burrow start --validator=$i --config=.burrow_val$i.toml" &
 done
-
-#==========================================================================================
-#Check network status
-#==========================================================================================
-curl -s ${users[2]}:20001/network | jq -r '.result.peers[].node_info.moniker'
