@@ -20,10 +20,15 @@ serverscount=${#urls[@]}
 #==========================================================================================
 #Check network status
 #==========================================================================================
-for ((i=0; i<$serverscount; i++)); do
+echo "=============================================="
+echo "Connected Nodes"
+echo "=============================================="
+for ((i=1; i<$serverscount; i++)); do
+    nNodes=`curl -s ${urls[$i]}:20001/network | jq -r '.result.n_peers'`
+    if [ -z $nNodes ]; then
+        nNodes="0"
+    fi
+    echo "[ $nNodes nodes are connected to node $i ]"
+    curl -s ${urls[$i]}:20001/network | jq -r '.result.peers[].node_info.moniker'
     echo "=============================================="
-    echo "Connected Nodes"
-    echo "=============================================="
-    echo "from node $i:"
-    curl -s ${users[1]}:20001/network | jq -r '.result.peers[].node_info.moniker'
 done

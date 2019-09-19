@@ -1,8 +1,9 @@
 # BurrowNet
-Create a test net or main net of hyper ledger burrow using single command 
+Create a test net or main net of hyperledger burrow using single command 
 
 # Requirements
-Make sure in the seed server these tools are installed:
+Make sure in the seed server the tools like curl,sshpass,sed,jq are installed. The shell script will install these requirements automatically but you can install them using commands below:
+
 ```bash
 sudo apt-get update
 sudo apt-get -y install curl
@@ -10,12 +11,10 @@ sudo apt-get -y install sshpass
 sudo apt-get -y install sed
 sudo apt-get -y install jq
 ```
-and also make sure that there is no problem with ports 10001,10002,10003 for seed node and 20000,20001,20002 for validator nodes.
 
-Note: The shell script will install these requirements automatically
+and also make sure that there is no problem with port numbers 10001,10002,10003 for seed node and port numbers 20000,20001,20002 for validator nodes.
 
-## Install burrow network
-
+# Install burrow network
 In this quick start, we will few create a small test net by 1 seed node and 3 validators
 
 ### Step1: Add your servers to servers.txt
@@ -34,6 +33,7 @@ password3
 root
 password4
 ```
+
 ### Step2: Install network using install shell file
 usage: install.sh [chainname] [empty_blocks_creation_time]
 
@@ -45,22 +45,24 @@ After installation, if everything goes well, the shell file automatically run al
 
 Your network is ready and you can send transaction or deploy smart contracts 
 
-### Uninstall network 
+# Uninstall network 
 usage: uninstall.sh [chainname]
 ```bash
 sudo bash uninstall.sh testnet1
 ```
-### Connect to node
+
+# Connect to node by ID number
 usage: connect.sh [node_ID]
 
 for example, for connect to node 1 use this:
 ```bash
 sudo bash connect.sh 1
 ```
-### Check Connected Nodes
+
+# Check Connected Nodes
 usage: status.sh
 
-for example, for connect to node 1 use this:
+for get current connected nodes to each node, use this command:
 ```bash
 sudo bash status.sh
 ```

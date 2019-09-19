@@ -1,9 +1,14 @@
 #!/bin/bash
 
 #unistall chain totally from servers
-#usage: ./uinstall <chainname>
+#usage: ./uinstall.sh <chainname>
 
 chainname=$1
+
+if [ -z "$chainname" ]; then
+    echo "please enter chain name:"
+    read chainname
+fi
 
 echo "uninstalling chain: $chainnamefrom..."
 
@@ -28,5 +33,6 @@ echo "loaded $serverscount servers successfully!"
 for ((i=0; i<$serverscount; i++)); do
     echo "uninstalling from server $i..."
     sshpass -p "${passwords[$i]}" ssh ${users[$i]}@${urls[$i]} "pkill -f burrow"
+    sleep 2
     sshpass -p "${passwords[$i]}" ssh ${users[$i]}@${urls[$i]} "rm -R $chainname"
 done

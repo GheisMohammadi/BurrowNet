@@ -1,6 +1,6 @@
 #!/bin/bash
 
-chainname=$1
+chainname="$1"
 nodescount=$2
 
 #prefixs for adding to address of peers
@@ -8,13 +8,35 @@ prefix1="tcp://"
 prefix2="tcp://"
 prefix3=""
 
-cd $chainname #burrow-testnet-2
+#create new screen
+#screen 
+
+cd $chainname
+
+#==========================================================================================
+#wait for peer node
+#==========================================================================================
+#both setup seed and setup peers are running parallel then we need wait for seed first
+until pids=$(pidof burrow)
+do   
+    sleep 1
+done
+
+#==========================================================================================
+#prepare config files for validators
+#==========================================================================================
+echo "waiting for .burrow_init.toml ..."
+while [ ! -f .burrow_init.toml ]
+do
+  sleep 1
+done
 
 echo "creating toml files for $nodescount peers..."
 for i in `seq 1 $nodescount`
 do
     echo "create toml file for validator $i ..."
     cp .burrow_init.toml .burrow_val$i.toml
+    chmod 777 .burrow_val$i.toml
 done
 
 #==========================================================================================
@@ -90,6 +112,13 @@ done
 echo "start validators..."
 for i in `seq 1 $nodescount`
 do
-    echo "start validator $i ..."
-    sshpass -p "${passwords[$i]}" ssh -o 'StrictHostKeyChecking no' ${users[$i]}@${urls[$i]} "bash $chainname/burrow start --validator=$i --config=.burrow_val$i.toml" &
+     echo "start validator $i ..."
+    sshpass -p "${passwords[$i]}" ssh -o 'StrictHostKeyChecking no' ${users[$i]}@${urls[$i]} "echo \"    cd $chainname
+    ./burrow start --validator=$i --config=.burrow_val$i.toml > peer_logs.log 2>&1 &\" > $chainname/run_node.sh"
+    sshpass -p "${passwords[$i]}" ssh -o 'StrictHostKeyChecking no' ${users[$i]}@${urls[$i]} "chmod 777 $chainname/run_node.sh | bash $chainname/run_node.sh" &
+    #for run directly use this:
+    #sshpass -p "${passwords[$i]}" ssh -o 'StrictHostKeyChecking no' ${users[$i]}@${urls[$i]} "bash $chainname/burrow start --validator=$i --config=.burrow_val$i.toml" &
 done
+
+echo "$nodescount nodes is running!"
+echo "use ./status.sh for see connections!"

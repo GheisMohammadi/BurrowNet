@@ -16,7 +16,7 @@ echo "chain name: $chainname"
 #==========================================================================================
 #prepare creation time of empty blocks
 #==========================================================================================
-creationtime=$2
+creationtime="$2"
 if [ -z "$creationtime" ]; then
     creationtime="0"
 fi
@@ -73,11 +73,30 @@ sshpass -p "${passwords[0]}" scp -o StrictHostKeyChecking=no "setuppeers.sh" ${u
 #setup seed node
 #==========================================================================================
 echo "setup and run seed node ..."
-sshpass -p "${passwords[0]}" ssh -o 'StrictHostKeyChecking no' ${users[0]}@${urls[0]} "chmod 777 $chainname/burrow | chmod 777 $chainname/setupseed.sh | screen | bash $chainname/setupseed.sh $chainname $serverscount ${urls[0]} $creationtime" &
+sshpass -p "${passwords[0]}" ssh -o 'StrictHostKeyChecking no' ${users[0]}@${urls[0]} "chmod 777 $chainname/burrow | chmod 777 $chainname/setupseed.sh | bash $chainname/setupseed.sh $chainname $serverscount ${urls[0]} $creationtime" &
 
 #==========================================================================================
 #setup peers
 #==========================================================================================
 echo "setup peer nodes ..."
 peerscount=$((serverscount-1))
-sshpass -p "${passwords[0]}" ssh -o 'StrictHostKeyChecking no' ${users[0]}@${urls[0]} "chmod 777 $chainname/setuppeers.sh | bash $chainname/setuppeers.sh $chainname $peerscount"
+sshpass -p "${passwords[0]}" ssh -o 'StrictHostKeyChecking no' ${users[0]}@${urls[0]} "chmod 777 $chainname/setuppeers.sh | bash $chainname/setuppeers.sh $chainname $peerscount" &
+
+#==========================================================================================
+#wait for connections at least half of nodes
+#==========================================================================================
+sleep 60
+#echo "waiting for connections between nodes..."
+#npeers=`curl -s ${urls[1]}:20001/network | jq -r '.result.n_peers'`
+#connectednodes=$(expr $npeers + 0)
+#minconnections=$(expr $serverscount / 2 )
+#while [ $connectednodes -lt $minconnections ];
+#do
+#  sleep 1
+#  npeers=`curl -s ${urls[1]}:20001/network | jq -r '.result.n_peers'`
+#  connectednodes=$(expr $npeers + 0)
+#done
+#    
+#echo "minimum number of connections between nodes are detected."
+echo "use ./status.sh for see connections!"
+echo "Good luck!"

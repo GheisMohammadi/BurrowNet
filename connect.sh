@@ -23,6 +23,5 @@ then
     echo "index is not correct!"
 else
     echo "connecting to server $1"
-    sshpass -p "${passwords[$1]}" ssh ${users[$1]}@${urls[$1]}
+    sshpass -p "${passwords[$1]}" ssh -o ServerAliveInterval=180 -o ServerAliveCountMax=2 ${users[$1]}@${urls[$1]}
 fi
-
