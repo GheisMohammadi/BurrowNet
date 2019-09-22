@@ -1,1 +1,5 @@
+tmp/*
+test.sh
+.chain.dat
 _servers.txt
+servers_.txt

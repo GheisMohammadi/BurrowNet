@@ -4,12 +4,17 @@
 #usage: ./status.sh
 
 #==========================================================================================
+#get directory of script
+#==========================================================================================
+BASEDIR=$(dirname "$0")
+
+#==========================================================================================
 #prepare servers
 #==========================================================================================
 declare -a urls
 declare -a users
 declare -a passwords
-filename='servers.txt'
+filename="$BASEDIR/servers.txt"
 n=0
 echo "reading servers..."
 while read urls[$n] && read users[$n] && read -r passwords[$n] ; do
@@ -23,7 +28,7 @@ serverscount=${#urls[@]}
 echo "=============================================="
 echo "Connected Nodes"
 echo "=============================================="
-for ((i=1; i<$serverscount; i++)); do
+for ((i=0; i<$serverscount; i++)); do
     nNodes=`curl -s ${urls[$i]}:20001/network | jq -r '.result.n_peers'`
     if [ -z $nNodes ]; then
         nNodes="0"

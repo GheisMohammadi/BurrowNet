@@ -1,12 +1,17 @@
 #!/bin/bash
 
 #==========================================================================================
+#get directory of script
+#==========================================================================================
+BASEDIR=$(dirname "$0")
+
+#==========================================================================================
 #prepare servers
 #==========================================================================================
 declare -a urls
 declare -a users
 declare -a passwords
-filename='servers.txt'
+filename="$BASEDIR/servers.txt"
 n=0
 echo "reading servers..."
 while read urls[$n] && read users[$n] && read -r passwords[$n] ; do
@@ -22,6 +27,6 @@ if (($1<0 || $1>$serverscount))
 then
     echo "index is not correct!"
 else
-    echo "connecting to server $1"
-    sshpass -p "${passwords[$1]}" ssh -o ServerAliveInterval=180 -o ServerAliveCountMax=2 ${users[$1]}@${urls[$1]}
+    echo "connecting to server $1 (${users[$1]}@${urls[$1]}) ..."
+    sshpass -p "${passwords[$1]}" ssh  -o 'StrictHostKeyChecking no' -o ServerAliveInterval=180 -o ServerAliveCountMax=2 ${users[$1]}@${urls[$1]}
 fi

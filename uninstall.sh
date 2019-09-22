@@ -3,6 +3,21 @@
 #unistall chain totally from servers
 #usage: ./uinstall.sh <chainname>
 
+#==========================================================================================
+#get full address of chain directory
+#==========================================================================================
+getChainDir()
+{
+    username=$1
+    chainpath=""
+    if [ $username=="root" ]; then
+        chainpath="$chainname"
+    else
+        chainpath="/home/$username/$chainname"
+    fi
+}
+#==========================================================================================
+
 chainname=$1
 
 if [ -z "$chainname" ]; then
@@ -33,6 +48,6 @@ echo "loaded $serverscount servers successfully!"
 for ((i=0; i<$serverscount; i++)); do
     echo "uninstalling from server $i..."
     sshpass -p "${passwords[$i]}" ssh ${users[$i]}@${urls[$i]} "pkill -f burrow"
-    sleep 2
-    sshpass -p "${passwords[$i]}" ssh ${users[$i]}@${urls[$i]} "rm -R $chainname"
+    getChainDir "${users[$i]}"
+    sshpass -p "${passwords[$i]}" ssh ${users[$i]}@${urls[$i]} "[ -d $chainpath ] && rm -R $chainpath"
 done

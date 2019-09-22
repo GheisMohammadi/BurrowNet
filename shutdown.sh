@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #reset all nodes of chain
-#usage: ./reset.sh <chainname>
+#usage: ./shutdown.sh <chainname>
 
 #==========================================================================================
 #get inputs from command line
@@ -13,7 +13,7 @@ if [ -z "$chainname" ]; then
     read chainname
 fi
 
-echo "reseting chain: $chainnamefrom..."
+echo "shutting down chain: $chainnamefrom..."
 
 #==========================================================================================
 #get directory of script
@@ -52,24 +52,13 @@ serverscount=${#urls[@]}
 #Check network status
 #==========================================================================================
 echo "=============================================="
-echo "Reset Nodes"
+echo "Shut down Nodes"
 echo "=============================================="
 for ((i=0; i<$serverscount; i++)); do
     echo "closing burrow in node $i ..."
     sshpass -p "${passwords[$i]}" ssh ${users[$i]}@${urls[$i]} "pkill -f burrow"
 done
 
-echo "waiting for confirm closing..."
-sleep 5
-
 echo "=============================================="
-echo "Starting Nodes"
-echo "=============================================="
-for ((i=0; i<$serverscount; i++)); do
-    echo "starting node $i ..."
-    getChainDir "${users[$i]}"
-    sshpass -p "${passwords[$i]}" ssh ${users[$i]}@${urls[$i]} "[ -e $chainpath/run_node.sh ] && | bash $chainpath/run_node.sh"
-done
-echo "=============================================="
-echo "All nodes reset successfully!"
+echo "All nodes are turned off successfully!"
 echo "Good Luck!"
